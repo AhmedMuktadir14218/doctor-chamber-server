@@ -20,13 +20,105 @@ async function run(){
     try{
         await client.connect();
         console.log('db connected');
-        const serviceCollection = client.db('doctorsportal').collection('services');
+        const appointmentOptionCollection = client.db('doctors-chamber').collection('services');
+        const bookingsCollection = client.db('doctors-chamber').collection('bookings');
 
-        app.get('/service', async(req, res) =>{
+        // app.get('/appointmentOption', async(req, res) =>{
+        //     const date = req.query.date;
+        //     console.log(date);
+        //     const query = {};
+        //     const cursor = serviceCollection.find(query);
+        //     const services = await cursor.toArray();
+        //     res.send(services);
+        // })
+
+        // Use Aggregate to query multiple collection and then merge data
+        app.get('/appointmentOptions', async (req, res) => {
+            const date = req.query.date;
             const query = {};
-            const cursor = serviceCollection.find(query);
-            const services = await cursor.toArray();
-            res.send(services);
+            const options = await appointmentOptionCollection.find(query).toArray();
+
+            // get the bookings of the provided date
+            const bookingQuery = { appointmentDate: date }
+            const alreadyBooked = await bookingsCollection.find(bookingQuery).toArray();
+
+            // code carefully :D
+            options.forEach(option => {
+                const optionBooked = alreadyBooked.filter(book => book.treatment === option.name);
+                const bookedSlots = optionBooked.map(book => book.slot);
+                const remainingSlots = option.slots.filter(slot => !bookedSlots.includes(slot))
+                option.slots = remainingSlots;
+                console.log(option.name,bookedSlots);
+            })
+            res.send(options);
+        });
+
+
+
+
+        // app.get('/v2/appointmentOptions', async (req, res) => {
+        //     const date = req.query.date;
+        //     const options = await appointmentOptionCollection.aggregate([
+        //         {
+        //             $lookup: {
+        //                 from: 'bookings',
+        //                 localField: 'name',
+        //                 foreignField: 'treatment',
+        //                 pipeline: [
+        //                     {
+        //                         $match: {
+        //                             $expr: {
+        //                                 $eq: ['$appointmentDate', date]
+        //                             }
+        //                         }
+        //                     }
+        //                 ],
+        //                 as: 'booked'
+        //             }
+        //         },
+        //         {
+        //             $project: {
+        //                 name: 1,
+        //                 slots: 1,
+        //                 booked: {
+        //                     $map: {
+        //                         input: '$booked',
+        //                         as: 'book',
+        //                         in: '$$book.slot'
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             $project: {
+        //                 name: 1,
+        //                 slots: {
+        //                     $setDifference: ['$slots', '$booked']
+        //                 }
+        //             }
+        //         }
+        //     ]).toArray();
+        //     res.send(options);
+        // })
+
+
+
+
+
+        //booking with modal read post
+       
+       
+        app.get('/bookingsView', async(req, res) =>{
+            const query = {};
+            const cursor = bookingsCollection.find(query);
+            const BookingsView = await cursor.toArray();
+            res.send(BookingsView);
+        })
+        app.post('/bookings', async(req, res) =>{
+            const booking = req.body
+            const result = 
+            await bookingsCollection.insertOne(booking);            
+            res.send(result);
         })
 
 
