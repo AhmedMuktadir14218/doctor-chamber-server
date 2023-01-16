@@ -22,7 +22,7 @@ async function run(){
         console.log('db connected');
         const appointmentOptionCollection = client.db('doctors-chamber').collection('services');
         const bookingsCollection = client.db('doctors-chamber').collection('bookings');
-
+        const usersCollection = client.db('doctors-chamber').collection('users');
         // app.get('/appointmentOption', async(req, res) =>{
         //     const date = req.query.date;
         //     console.log(date);
@@ -154,6 +154,23 @@ async function run(){
             const result = await bookingsCollection.insertOne(booking);
             res.send(result);
         })
+
+
+
+
+        // app.get('/users', async (req, res) => {
+        //     const query = {};
+        //     const users = await usersCollection.find(query).toArray();
+        //     res.send(users);
+        // });
+
+        app.post('/users', async (req, res) => {
+            const user = req.body;
+            console.log(user);
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
+        });
+
 
 
     }
