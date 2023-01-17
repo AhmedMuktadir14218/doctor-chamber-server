@@ -162,11 +162,11 @@ async function run(){
             const query = { email: email };
             const user = await usersCollection.findOne(query);
             
-            // if (user) {
-            //     const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1h' })
-            //     return res.send({ accessToken: token });
-            // }
-            console.log(user);
+            if (user) {
+                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1h' })
+                return res.send({ accessToken: token });
+            }
+            // console.log(user);
             res.status(403).send({ accessToken: '' })
             // res.send({ accessToken: 'sdfhdfnhdf' })
         });
