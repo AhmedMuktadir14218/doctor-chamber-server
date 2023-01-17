@@ -139,7 +139,7 @@ async function run(){
         //     res.send(result);
         // })
 
-        app.get('/bookings', verifyJWT,   async (req, res) => {
+        app.get('/bookings', /** */ verifyJWT,   async (req, res) => {
             const email = req.query.email;
             
             const decodedEmail = req.decoded.email;
