@@ -37,18 +37,11 @@ function verifyJWT(req, res, next) {
 async function run(){
     try{
         await client.connect();
-        console.log('db connected');
+        // console.log('db connected');
         const appointmentOptionCollection = client.db('doctors-chamber').collection('services');
         const bookingsCollection = client.db('doctors-chamber').collection('bookings');
         const usersCollection = client.db('doctors-chamber').collection('users');
-        // app.get('/appointmentOption', async(req, res) =>{
-        //     const date = req.query.date;
-        //     console.log(date);
-        //     const query = {};
-        //     const cursor = serviceCollection.find(query);
-        //     const services = await cursor.toArray();
-        //     res.send(services);
-        // })
+
 
         // Use Aggregate to query multiple collection and then merge data
         app.get('/appointmentOptions', async (req, res) => {
@@ -66,7 +59,7 @@ async function run(){
                 const bookedSlots = optionBooked.map(book => book.slot);
                 const remainingSlots = option.slots.filter(slot => !bookedSlots.includes(slot))
                 option.slots = remainingSlots;
-                console.log(option.name,bookedSlots);
+                // console.log(option.name,bookedSlots);
             })
             res.send(options);
         });
@@ -156,7 +149,7 @@ async function run(){
 
         app.post('/bookings', async (req, res) => {
             const booking = req.body;
-            console.log(booking);
+            // console.log(booking);
             const query = {
                 appointmentDate: booking.appointmentDate,
                 email: booking.email,
@@ -184,7 +177,7 @@ async function run(){
                 const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1h' })
                 return res.send({ accessToken: token });
             }
-            console.log(user);
+            // console.log(user);
             res.status(403).send({ accessToken: '' })
             // res.send({ accessToken: 'sdfhdfnhdf' })
         });
