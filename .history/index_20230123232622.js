@@ -46,7 +46,7 @@ function verifyJWT(req, res, next) {
 async function run() {
     try {
 
-         console.log('db connected');
+         // console.log('db connected');
          const appointmentOptionCollection = client.db('doctors-chamber').collection('services');
          const bookingsCollection = client.db('doctors-chamber').collection('bookings');
          const usersCollection = client.db('doctors-chamber').collection('users');
