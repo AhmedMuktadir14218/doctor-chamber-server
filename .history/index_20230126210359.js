@@ -148,7 +148,7 @@ async function run() {
          * app.delete('/bookings/:id')
         */
 
-        app.get('/bookings', /* verifyJWT,*/ async (req, res) => {
+        app.get('/bookings', /* */ async (req, res) => {
             const email = req.query.email;
             // const decodedEmail = req.decoded.email;
 
