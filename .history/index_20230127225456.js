@@ -3,8 +3,7 @@ const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
+// const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const port = process.env.PORT || 5000;
 
@@ -22,7 +21,6 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ys4yzch.mongodb.net/?retryWrites=true&w=majority`;
 
 console.log(uri);
-// console.log(stripe);
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 function verifyJWT(req, res, next) {
@@ -219,7 +217,7 @@ async function run() {
                 }
             }
             const updatedResult = await bookingsCollection.updateOne(filter, updatedDoc)
-            res.send(result);
+            res.send(updatedResult);
         })
 
         app.get('/jwt', async (req, res) => {
